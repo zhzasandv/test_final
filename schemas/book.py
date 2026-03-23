@@ -1,32 +1,22 @@
 from pydantic import BaseModel, computed_field
 from typing import Optional
+from schemas.author import AuthorDTO
+from schemas.genre import GenreDTO
+from dotenv import load_dotenv
+import os
 
-BASE_URL = "http://localhost:8000"
-
-
-class AuthorSchema(BaseModel):
-    id: int
-    first_name: str
-    last_name: str
-
-    model_config = {"from_attributes": True}
+load_dotenv()
+BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
 
 
-class GenreSchema(BaseModel):
-    id: int
-    name: str
-
-    model_config = {"from_attributes": True}
-
-
-class BookSchema(BaseModel):
+class BookDTO(BaseModel):
     id: int
     name: str
     price: float
     title: str
     publication_date: str
-    genre: GenreSchema
-    authors: list[AuthorSchema]
+    genre: GenreDTO
+    authors: list[AuthorDTO]
     oblojka: Optional[str] = None
 
     @computed_field

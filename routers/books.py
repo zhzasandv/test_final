@@ -1,16 +1,17 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 from database import get_db
-from models import Book
-from schemas import BookSchema
+from repositories.book import BookRepository
+from services.book import BookService
+from schemas.book import BookDTO
 
 router = APIRouter(prefix="/api/v1/books", tags=["books"])
 
 
-@router.get("/", response_model=list[BookSchema])
-def get_books(db: Session = Depends(get_db)):
-    books = db.query(Book).options(
-        joinedload(Book.authors),
-        joinedload(Book.genre)
-    ).all()
-    return books
+def get_service(db: Session = Depends(get_db)) -> BookService:
+    return BookService(BookRepository(db))
+
+
+@router.get("/", response_model=list[BookDTO])
+def get_books(service: BookService = Depends(get_service)):
+    return service.get_all()

@@ -13,7 +13,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/media", StaticFiles(directory="shop/media/books"), name="media")
+app.mount("/media", StaticFiles(directory="media"), name="media")
 
 app.include_router(books.router)
 app.include_router(authors.router)
